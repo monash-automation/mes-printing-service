@@ -9,19 +9,18 @@ export interface Printer {
 
 type PinterId = Pick<Printer, 'id'>;
 
+const instance = axios.create({
+  baseURL: import.meta.env.VITE_PRINTER_SERVER_URL,
+});
+
 export async function getPrinters(): Promise<Printer[]> {
-  const resp = await axios.get<Printer[]>(
-    'http://localhost:8000/api/v1/printers/',
-  );
+  const resp = await instance.get<Printer[]>('/api/v1/printers');
   return resp.data;
 }
 
 export async function addPrinter(
   printer: Omit<Printer, 'id'>,
 ): Promise<PinterId> {
-  const resp = await axios.postForm<PinterId>(
-    'http://localhost:8000/api/v1/printers',
-    printer,
-  );
+  const resp = await axios.postForm<PinterId>('/api/v1/printers', printer);
   return resp.data;
 }
