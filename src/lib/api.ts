@@ -1,10 +1,13 @@
 import axios from 'axios';
 
+type PrinterApi = 'Mock' | 'OctoPrint' | 'Prusa';
+
 export interface Printer {
   id: number;
-  octo_url: string;
-  octo_api_key: string;
+  url: string;
+  api_key: string;
   opcua_ns: number;
+  api: PrinterApi;
 }
 
 type PinterId = Pick<Printer, 'id'>;

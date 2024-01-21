@@ -32,8 +32,12 @@ const columns: ColumnDef<Printer>[] = [
     header: 'Id',
   },
   {
-    accessorKey: 'octo_url',
-    header: 'OctoPrint Server',
+    accessorKey: 'url',
+    header: 'Printer URL',
+  },
+  {
+    accessorKey: 'api',
+    header: 'Printer API',
   },
   {
     accessorKey: 'opcua_ns',
