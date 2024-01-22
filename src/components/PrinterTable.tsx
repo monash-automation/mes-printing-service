@@ -137,7 +137,7 @@ function DataTable<TData, TValue>({
 }
 
 export default function PrinterTable() {
-  const query = useQuery({
+  const { data } = useQuery({
     queryKey: ['printers'],
     queryFn: getPrinters,
     refetchInterval: 3000,
@@ -147,9 +147,9 @@ export default function PrinterTable() {
       <div className="flex justify-end">
         <AddPrinterButton />
       </div>
-      {query.data && (
+      {data && (
         <div className="py-8">
-          <DataTable columns={columns} data={query.data} />
+          <DataTable columns={columns} data={data} />
         </div>
       )}
     </div>

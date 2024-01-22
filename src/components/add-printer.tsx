@@ -19,14 +19,22 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { addPrinter } from '@/lib/api.ts';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { PrinterApi, addPrinter } from '@/lib/api.ts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 const formSchema = z.object({
-  octo_url: z.string().url(),
-  octo_api_key: z.string().min(4).max(36),
+  url: z.string().url(),
+  api: z.nativeEnum(PrinterApi),
+  api_key: z.string().min(4).max(36),
   opcua_ns: z.coerce.number().gt(0).lte(9999),
 });
 
@@ -41,8 +49,9 @@ export function AddPrinterButton() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      octo_url: 'http://localhost:5000',
-      octo_api_key: '79ED0684040E4B96A34C3ABF4EA0A96A',
+      url: 'http://localhost:5000',
+      api_key: '79ED0684040E4B96A34C3ABF4EA0A96A',
+      api: PrinterApi.Prusa,
       opcua_ns: 42,
     },
   });
@@ -66,10 +75,38 @@ export function AddPrinterButton() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
-              name="octo_url"
+              name="api"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>OctoPrint Server URL</FormLabel>
+                  <FormLabel>Printer Type</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a verified email to display" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value={PrinterApi.Prusa}>Prusa</SelectItem>
+                      <SelectItem value={PrinterApi.OctoPrint}>
+                        OctoPrint
+                      </SelectItem>
+                      <SelectItem value={PrinterApi.Mock}>Mock</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>Type of the printer.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Printer URL</FormLabel>
                   <FormControl>
                     <Input
                       type="url"
@@ -77,19 +114,17 @@ export function AddPrinterButton() {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    URL of the OctoPrint server.
-                  </FormDescription>
+                  <FormDescription>URL of the Printer server.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <FormField
               control={form.control}
-              name="octo_api_key"
+              name="api_key"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>OctoPrint API Key</FormLabel>
+                  <FormLabel>API Key</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="79ED0684040E4B96A34C3ABF4EA0A96A"
@@ -97,7 +132,7 @@ export function AddPrinterButton() {
                     />
                   </FormControl>
                   <FormDescription>
-                    API key of the OctoPrint server.
+                    API key is required to call Printer APIs.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

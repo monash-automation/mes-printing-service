@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-type PrinterApi = 'Mock' | 'OctoPrint' | 'Prusa';
+export enum PrinterApi {
+  Mock = 'Mock',
+  OctoPrint = 'OctoPrint',
+  Prusa = 'Prusa',
+}
 
 export interface Printer {
   id: number;
@@ -24,6 +28,6 @@ export async function getPrinters(): Promise<Printer[]> {
 export async function addPrinter(
   printer: Omit<Printer, 'id'>,
 ): Promise<PinterId> {
-  const resp = await axios.postForm<PinterId>('/api/v1/printers', printer);
+  const resp = await instance.postForm<PinterId>('/api/v1/printers', printer);
   return resp.data;
 }
