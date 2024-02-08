@@ -10,7 +10,7 @@ export interface Printer {
   id: number;
   url: string;
   api_key: string;
-  opcua_ns: number;
+  opcua_name: string;
   api: PrinterApi;
 }
 

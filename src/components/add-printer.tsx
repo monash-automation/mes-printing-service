@@ -35,7 +35,7 @@ const formSchema = z.object({
   url: z.string().url(),
   api: z.nativeEnum(PrinterApi),
   api_key: z.string().min(4).max(36),
-  opcua_ns: z.coerce.number().gt(0).lte(9999),
+  opcua_name: z.string().min(1),
 });
 
 function onSubmit(values: z.infer<typeof formSchema>) {
@@ -52,7 +52,7 @@ export function AddPrinterButton() {
       url: 'http://localhost:5000',
       api_key: '79ED0684040E4B96A34C3ABF4EA0A96A',
       api: PrinterApi.Prusa,
-      opcua_ns: 42,
+      opcua_name: 'Printer1',
     },
   });
 
@@ -140,12 +140,12 @@ export function AddPrinterButton() {
             />
             <FormField
               control={form.control}
-              name="opcua_ns"
+              name="opcua_name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>OPC UA Object Namespace</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="42" {...field} />
+                    <Input placeholder="Printer1" {...field} />
                   </FormControl>
                   <FormDescription>
                     Namespace index of the corresponding printer object.
