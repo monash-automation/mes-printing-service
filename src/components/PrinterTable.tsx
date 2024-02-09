@@ -28,7 +28,7 @@ const columns: ColumnDef<Printer>[] = [
     header: 'Printer API',
   },
   {
-    accessorKey: 'opcua_ns',
+    accessorKey: 'opcua_name',
     header: 'OPC UA Object Namespace',
   },
   {

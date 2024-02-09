@@ -10,8 +10,9 @@ const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Auth0Provider
-      domain="dev-wb1y7e7axko5q1ie.us.auth0.com"
+      domain={import.meta.env.VITE_AUTH0_DOMAIN}
       clientId="WOejY2FUScZgNKKuJ8ptuQj9bpewBcdg"
+      audience={`https://${import.meta.env.VITE_AUTH0_DOMAIN}/api/v2/`}
       authorizationParams={{
         redirect_uri: window.location.origin,
       }}

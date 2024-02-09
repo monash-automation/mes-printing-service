@@ -40,7 +40,13 @@ export default function Profile() {
 
   const query = useQuery({
     queryKey: ['accessToken'],
-    queryFn: async () => await getAccessTokenSilently(),
+    queryFn: async () => await getAccessTokenSilently({
+      authorizationParams:{
+      audience:"https://{import.meta.env.VITE_AUTH0_DOMAIN}/api/v2/",
+      scope:"read:current_user",
+    },
+    }),
+
   });
 
   if (isLoading) {
