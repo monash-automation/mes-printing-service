@@ -42,7 +42,7 @@ export default function Profile() {
     queryKey: ['accessToken'],
     queryFn: async () => await getAccessTokenSilently({
       authorizationParams:{
-      audience:"https://{import.meta.env.VITE_AUTH0_DOMAIN}/api/v2/",
+      audience:`https://{import.meta.env.VITE_AUTH0_DOMAIN}/api/v2/`,
       scope:"read:current_user",
     },
     }),

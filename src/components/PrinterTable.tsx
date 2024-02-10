@@ -9,10 +9,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Printer, getPrinters } from '@/lib/api';
+import { Printer, PrinterServerApi } from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const columns: ColumnDef<Printer>[] = [
   {
@@ -62,9 +63,15 @@ const columns: ColumnDef<Printer>[] = [
 ];
 
 export default function PrinterTable() {
+  const { getAccessTokenSilently } = useAuth0();
+
   const { data } = useQuery({
     queryKey: ['printers'],
-    queryFn: getPrinters,
+    queryFn: async () => {
+      const accessToken = await getAccessTokenSilently();
+      const printerApi = new PrinterServerApi(accessToken);
+      return printerApi.getPrinters();
+    },
     refetchInterval: 3000,
   });
   return (

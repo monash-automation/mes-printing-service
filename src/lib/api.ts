@@ -16,9 +16,6 @@ export interface Printer {
 
 type PrinterId = Pick<Printer, 'id'>;
 
-const instance = axios.create({
-  baseURL: import.meta.env.VITE_PRINTER_SERVER_URL,
-});
 
 export class PrinterServerApi{
 
@@ -56,14 +53,3 @@ export class PrinterServerApi{
   }
 }
 
-export async function getPrinters(): Promise<Printer[]> {
-  const resp = await instance.get<Printer[]>('/api/v1/printers');
-  return resp.data;
-}
-
-export async function addPrinter(
-  printer: Omit<Printer, 'id'>,
-): Promise<PrinterId> {
-  const resp = await instance.postForm<PrinterId>('/api/v1/printers', printer);
-  return resp.data;
-}
