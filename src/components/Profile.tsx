@@ -40,7 +40,13 @@ export default function Profile() {
 
   const query = useQuery({
     queryKey: ['accessToken'],
-    queryFn: async () => await getAccessTokenSilently(),
+    queryFn: async () =>
+      await getAccessTokenSilently({
+        authorizationParams: {
+          audience: import.meta.env.VITE_AUTH0_AUDIENCE,
+          scope: 'read:current_user',
+        },
+      }),
   });
 
   if (isLoading) {
@@ -53,6 +59,8 @@ export default function Profile() {
 
   updateId(user.sub);
   updateAccessToken(query.data);
+
+  console.log(query.data);
 
   return (
     <div className="flex w-60 justify-around gap-2">
