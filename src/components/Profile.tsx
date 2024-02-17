@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/hover-card';
 import { useUserStore } from '@/lib/states.ts';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
 function LoginButton() {
   const { loginWithRedirect } = useAuth0();
@@ -35,13 +35,24 @@ function LogoutButton() {
 export default function Profile() {
   const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
     useAuth0();
-  const updateId = useUserStore((state) => state.updateId);
   const updateAccessToken = useUserStore((state) => state.updateAccessToken);
+  const updateId = useUserStore((state) => state.updateId);
 
-  const query = useQuery({
-    queryKey: ['accessToken'],
-    queryFn: async () => await getAccessTokenSilently(),
-  });
+  useEffect(() => {
+    const fetchToken = () =>
+      getAccessTokenSilently({
+        authorizationParams: {
+          audience: import.meta.env.VITE_AUTH0_AUDIENCE,
+        },
+      });
+
+    if (user?.sub) {
+      updateId(user.sub);
+      fetchToken().then((token) => {
+        updateAccessToken(token);
+      });
+    }
+  }, [user?.sub, updateId, updateAccessToken, getAccessTokenSilently]);
 
   if (isLoading) {
     return <div>Loading ...</div>;
@@ -50,9 +61,6 @@ export default function Profile() {
   if (!isAuthenticated || !user) {
     return <LoginButton />;
   }
-
-  updateId(user.sub);
-  updateAccessToken(query.data);
 
   return (
     <div className="flex w-60 justify-around gap-2">
