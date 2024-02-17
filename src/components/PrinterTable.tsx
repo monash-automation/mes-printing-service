@@ -9,7 +9,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Printer, getPrinters } from '@/lib/api';
+import { Printer } from '@/lib/api';
+import { useUserStore } from '@/lib/states.ts';
 import { useQuery } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
@@ -62,11 +63,13 @@ const columns: ColumnDef<Printer>[] = [
 ];
 
 export default function PrinterTable() {
+  const printerServer = useUserStore((state) => state.printerServer);
   const { data } = useQuery({
     queryKey: ['printers'],
-    queryFn: getPrinters,
-    refetchInterval: 3000,
+    queryFn: async () => await printerServer.getPrinters(),
+    refetchInterval: 20000,
   });
+
   return (
     <div className="container mx-auto ">
       <div className="flex justify-end">

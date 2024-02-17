@@ -26,7 +26,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { PrinterApi, addPrinter } from '@/lib/api.ts';
+import { PrinterApi } from '@/lib/api.ts';
+import { useUserStore } from '@/lib/states.ts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -38,14 +39,8 @@ const formSchema = z.object({
   opcua_name: z.string().min(1),
 });
 
-function onSubmit(values: z.infer<typeof formSchema>) {
-  console.log(values);
-  addPrinter(values).then((id) => {
-    console.log(id);
-  });
-}
-
 export function AddPrinterButton() {
+  const printerServer = useUserStore((state) => state.printerServer);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -55,6 +50,12 @@ export function AddPrinterButton() {
       opcua_name: 'Printer1',
     },
   });
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    printerServer.addPrinter(values).then((id) => {
+      console.log(id);
+    });
+  }
 
   return (
     <Dialog>

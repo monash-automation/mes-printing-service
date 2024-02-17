@@ -36,6 +36,7 @@ export default function Profile() {
   const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
     useAuth0();
   const updateAccessToken = useUserStore((state) => state.updateAccessToken);
+  const updateId = useUserStore((state) => state.updateId);
 
   useEffect(() => {
     const fetchToken = () =>
@@ -46,11 +47,12 @@ export default function Profile() {
       });
 
     if (user?.sub) {
+      updateId(user.sub);
       fetchToken().then((token) => {
         updateAccessToken(token);
       });
     }
-  }, [user?.sub, updateAccessToken, getAccessTokenSilently]);
+  }, [user?.sub, updateId, updateAccessToken, getAccessTokenSilently]);
 
   if (isLoading) {
     return <div>Loading ...</div>;

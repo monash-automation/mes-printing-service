@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 
 export enum PrinterApi {
   Mock = 'Mock',
@@ -16,18 +16,28 @@ export interface Printer {
 
 type PinterId = Pick<Printer, 'id'>;
 
-const instance = axios.create({
-  baseURL: import.meta.env.VITE_PRINTER_SERVER_URL,
-});
+export class PrinterServer {
+  private _axios: AxiosInstance;
+  constructor(accessToken: string | undefined = undefined) {
+    const headers = accessToken
+      ? { Authorization: `Bearer ${accessToken}` }
+      : {};
+    this._axios = axios.create({
+      baseURL: import.meta.env.VITE_PRINTER_SERVER_URL,
+      headers: headers,
+    });
+  }
 
-export async function getPrinters(): Promise<Printer[]> {
-  const resp = await instance.get<Printer[]>('/api/v1/printers');
-  return resp.data;
-}
+  async getPrinters(): Promise<Printer[]> {
+    const resp = await this._axios.get<Printer[]>('/api/v1/printers');
+    return resp.data;
+  }
 
-export async function addPrinter(
-  printer: Omit<Printer, 'id'>,
-): Promise<PinterId> {
-  const resp = await instance.postForm<PinterId>('/api/v1/printers', printer);
-  return resp.data;
+  async addPrinter(printer: Omit<Printer, 'id'>): Promise<PinterId> {
+    const resp = await this._axios.postForm<PinterId>(
+      '/api/v1/printers',
+      printer,
+    );
+    return resp.data;
+  }
 }
