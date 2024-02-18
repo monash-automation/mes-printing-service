@@ -16,7 +16,7 @@ export interface Printer {
   is_active: boolean;
 }
 
-export type PinterId = Pick<Printer, 'id'>;
+export type PrinterId = Pick<Printer, 'id'>;
 export type CreatePrinter = Pick<
   Printer,
   'url' | 'api_key' | 'opcua_name' | 'api'
@@ -29,7 +29,7 @@ const _axios: AxiosInstance = axios.create({
 const getFetcher = (url: string) => _axios.get(url).then((resp) => resp.data);
 
 async function createPrinter(accessToken: string, printer: CreatePrinter) {
-  const resp = await _axios.postForm<PinterId>('/api/v1/printers', printer, {
+  const resp = await _axios.postForm<PrinterId>('/api/v1/printers', printer, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
