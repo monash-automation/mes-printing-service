@@ -31,6 +31,10 @@ const columns: ColumnDef<Printer>[] = [
     header: 'OPC UA Object Name',
   },
   {
+    accessorKey: 'is_active',
+    header: 'Worker Working',
+  },
+  {
     id: 'actions',
     cell: ({ row }) => {
       const printer = row.original;
