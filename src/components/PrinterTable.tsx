@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { Printer, usePrinters } from '@/lib/api';
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
@@ -67,8 +68,14 @@ const columns: ColumnDef<Printer>[] = [
 export default function PrinterTable() {
   const { printers, error, isLoading } = usePrinters();
 
+  if (isLoading) {
+    return <Skeleton className="container mx-auto" />;
+  } else if (error) {
+    return <p>{error}</p>;
+  }
+
   return (
-    <div className="container mx-auto ">
+    <div className="container mx-auto">
       <div className="flex justify-end">
         <AddPrinterButton />
       </div>

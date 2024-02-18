@@ -5,6 +5,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card';
+import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { useUserStore } from '@/lib/states.ts';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useEffect } from 'react';
@@ -53,7 +54,7 @@ export default function Profile() {
   }, [user?.sub, updateUser, getAccessTokenSilently]);
 
   if (isLoading) {
-    return <div>Loading ...</div>;
+    return <Skeleton className="flex h-14 w-60" />;
   }
 
   if (!isAuthenticated || !user) {
