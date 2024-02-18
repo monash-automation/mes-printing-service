@@ -50,11 +50,9 @@ const columns: ColumnDef<Printer>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() =>
-                navigator.clipboard.writeText(printer.id.toString())
-              }
+              onClick={() => navigator.clipboard.writeText(printer.api_key)}
             >
-              Copy Printer Id
+              Copy Api Key
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Update</DropdownMenuItem>
