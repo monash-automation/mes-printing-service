@@ -35,8 +35,7 @@ function LogoutButton() {
 export default function Profile() {
   const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
     useAuth0();
-  const updateAccessToken = useUserStore((state) => state.updateAccessToken);
-  const updateId = useUserStore((state) => state.updateId);
+  const updateUser = useUserStore((state) => state.update);
 
   useEffect(() => {
     const fetchToken = () =>
@@ -47,12 +46,11 @@ export default function Profile() {
       });
 
     if (user?.sub) {
-      updateId(user.sub);
       fetchToken().then((token) => {
-        updateAccessToken(token);
+        updateUser(user.sub, token);
       });
     }
-  }, [user?.sub, updateId, updateAccessToken, getAccessTokenSilently]);
+  }, [user?.sub, updateUser, getAccessTokenSilently]);
 
   if (isLoading) {
     return <div>Loading ...</div>;

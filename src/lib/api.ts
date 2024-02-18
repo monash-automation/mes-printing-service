@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
+import useSWR from 'swr';
 
 export enum PrinterApi {
   Mock = 'Mock',
@@ -12,32 +13,41 @@ export interface Printer {
   api_key: string;
   opcua_name: string;
   api: PrinterApi;
+  is_active: boolean;
 }
 
-type PinterId = Pick<Printer, 'id'>;
+export type PinterId = Pick<Printer, 'id'>;
+export type CreatePrinter = Pick<
+  Printer,
+  'url' | 'api_key' | 'opcua_name' | 'api'
+>;
 
-export class PrinterServer {
-  private _axios: AxiosInstance;
-  constructor(accessToken: string | undefined = undefined) {
-    const headers = accessToken
-      ? { Authorization: `Bearer ${accessToken}` }
-      : {};
-    this._axios = axios.create({
-      baseURL: import.meta.env.VITE_PRINTER_SERVER_URL,
-      headers: headers,
-    });
-  }
+const _axios: AxiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_PRINTER_SERVER_URL,
+});
 
-  async getPrinters(): Promise<Printer[]> {
-    const resp = await this._axios.get<Printer[]>('/api/v1/printers');
-    return resp.data;
-  }
+const getFetcher = (url: string) => _axios.get(url).then((resp) => resp.data);
 
-  async addPrinter(printer: Omit<Printer, 'id'>): Promise<PinterId> {
-    const resp = await this._axios.postForm<PinterId>(
-      '/api/v1/printers',
-      printer,
-    );
-    return resp.data;
-  }
+async function createPrinter(accessToken: string, printer: CreatePrinter) {
+  const resp = await _axios.postForm<PinterId>('/api/v1/printers', printer, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return resp.data;
+}
+
+export function usePrinters() {
+  const { data, error, isLoading, mutate } = useSWR(
+    '/api/v1/printers',
+    getFetcher,
+  );
+
+  return {
+    printers: data,
+    isLoading,
+    error,
+    createPrinter: async (token: string, printer: CreatePrinter) =>
+      await mutate(createPrinter(token, printer)),
+  };
 }

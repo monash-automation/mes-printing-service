@@ -26,7 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { PrinterApi } from '@/lib/api.ts';
+import { PrinterApi, usePrinters } from '@/lib/api.ts';
 import { useUserStore } from '@/lib/states.ts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -40,7 +40,8 @@ const formSchema = z.object({
 });
 
 export function AddPrinterButton() {
-  const printerServer = useUserStore((state) => state.printerServer);
+  const token = useUserStore((state) => state.accessToken);
+  const { createPrinter } = usePrinters();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -52,9 +53,7 @@ export function AddPrinterButton() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    printerServer.addPrinter(values).then((id) => {
-      console.log(id);
-    });
+    createPrinter(token!, values);
   }
 
   return (
@@ -144,12 +143,12 @@ export function AddPrinterButton() {
               name="opcua_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>OPC UA Object Namespace</FormLabel>
+                  <FormLabel>OPC UA Object Name</FormLabel>
                   <FormControl>
                     <Input placeholder="Printer1" {...field} />
                   </FormControl>
                   <FormDescription>
-                    Namespace index of the corresponding printer object.
+                    Name of the corresponding OPC UA printer object.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

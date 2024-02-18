@@ -9,9 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Printer } from '@/lib/api';
-import { useUserStore } from '@/lib/states.ts';
-import { useQuery } from '@tanstack/react-query';
+import { Printer, usePrinters } from '@/lib/api';
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
 
@@ -30,7 +28,7 @@ const columns: ColumnDef<Printer>[] = [
   },
   {
     accessorKey: 'opcua_name',
-    header: 'OPC UA Object Namespace',
+    header: 'OPC UA Object Name',
   },
   {
     id: 'actions',
@@ -63,21 +61,16 @@ const columns: ColumnDef<Printer>[] = [
 ];
 
 export default function PrinterTable() {
-  const printerServer = useUserStore((state) => state.printerServer);
-  const { data } = useQuery({
-    queryKey: ['printers'],
-    queryFn: async () => await printerServer.getPrinters(),
-    refetchInterval: 20000,
-  });
+  const { printers, error, isLoading } = usePrinters();
 
   return (
     <div className="container mx-auto ">
       <div className="flex justify-end">
         <AddPrinterButton />
       </div>
-      {data && (
+      {printers && (
         <div className="py-8">
-          <DataTable columns={columns} data={data} />
+          <DataTable columns={columns} data={printers} />
         </div>
       )}
     </div>
