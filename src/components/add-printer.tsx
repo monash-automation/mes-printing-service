@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/select';
 import { PrinterApi, usePrinters } from '@/lib/api.ts';
 import { useUserStore } from '@/lib/states.ts';
+import { useAuth0 } from '@auth0/auth0-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -40,6 +41,7 @@ const formSchema = z.object({
 });
 
 export function AddPrinterButton() {
+  const { loginWithRedirect } = useAuth0();
   const token = useUserStore((state) => state.accessToken);
   const { createPrinter } = usePrinters();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -51,6 +53,14 @@ export function AddPrinterButton() {
       opcua_name: 'Printer1',
     },
   });
+
+  if (!token) {
+    return (
+      <Button variant="outline" onClick={() => loginWithRedirect()}>
+        Add Printer
+      </Button>
+    );
+  }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     createPrinter(token!, values);
