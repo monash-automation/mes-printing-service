@@ -1,13 +1,12 @@
-import PrinterTable from '@/components/PrinterTable.tsx';
-import Profile from '@/components/Profile.tsx';
+import PrinterDashboard from '@/components/printer-dashboard.tsx';
 import './App.css';
-
 function App() {
   return (
     <>
-      <Profile />
+      {/*<Profile />*/}
+      <PrinterDashboard />
 
-      <PrinterTable />
+      {/*<PrinterTable />*/}
     </>
   );
 }
