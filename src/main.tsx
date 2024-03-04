@@ -1,3 +1,4 @@
+import { ThemeProvider } from '@/components/theme-provider.tsx';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
@@ -13,7 +14,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     {/*    audience: import.meta.env.VITE_AUTH0_AUDIENCE,*/}
     {/*  }}*/}
     {/*>*/}
-    <App />
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <App />
+    </ThemeProvider>
     {/*</Auth0Provider>*/}
   </React.StrictMode>,
 );

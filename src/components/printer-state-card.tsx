@@ -113,7 +113,7 @@ export default function PrinterStateCard({
     );
   }
   return (
-    <Card className="p-6">
+    <Card className="p-6 dark:bg-slate-900">
       <CardHeader className="flex-row content-center items-center justify-between p-0 text-xl font-bold capitalize md:text-2xl">
         <h3>
           {printerName} ({state.model})

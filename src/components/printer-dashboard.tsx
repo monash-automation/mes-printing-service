@@ -1,10 +1,11 @@
+import { ModeToggle } from '@/components/mode-toggle.tsx';
+import PrinterStateCard from '@/components/printer-state-card.tsx';
 import {
   Carousel,
   CarouselApi,
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel.tsx';
-import PrinterStateCard from '@/printer-state-card.tsx';
 import Autoplay from 'embla-carousel-autoplay';
 import { useEffect, useState } from 'react';
 
@@ -44,7 +45,10 @@ export default function PrinterDashboard() {
 
   return (
     <section aria-label="printer dashboard">
-      <h2 className="py-4 text-3xl">Printer Dashboard</h2>
+      <div className="mx-2 flex flex-row content-center items-center justify-between md:mx-4">
+        <h2 className="py-4 text-3xl">Printer Dashboard</h2>
+        <ModeToggle />
+      </div>
       <Carousel
         setApi={setApi}
         plugins={[
