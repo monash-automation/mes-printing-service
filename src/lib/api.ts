@@ -89,7 +89,7 @@ export function usePrinterState(printerName: string) {
 export function usePrinters() {
   const { data, error, isLoading, mutate } = useSWR(
     '/api/v1/printers',
-    getFetcher,
+    getFetcher<Printer[]>,
   );
 
   return {
@@ -97,6 +97,8 @@ export function usePrinters() {
     isLoading,
     error,
     createPrinter: async (token: string, printer: CreatePrinter) =>
+      // TODO: fix me
+      // @ts-ignore
       await mutate(createPrinter(token, printer)),
   };
 }
