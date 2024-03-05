@@ -41,6 +41,7 @@ export interface PrinterState {
   isReady: boolean;
   isPrinting: boolean;
   isError: boolean;
+  thumbnail_url: string | null;
 }
 
 export type PrinterId = Pick<Printer, 'id'>;
@@ -69,7 +70,7 @@ async function createPrinter(accessToken: string, printer: CreatePrinter) {
 
 export function usePrinterState(printerName: string) {
   const { data, error, isLoading } = useSWR(
-    `/api/v1/printers/state/${printerName}`,
+    `/api/v1/printer/${printerName}/state`,
     getFetcher<PrinterState>,
   );
 
@@ -77,6 +78,9 @@ export function usePrinterState(printerName: string) {
     data.isPrinting = data.state === 'printing';
     data.isReady = data.state === 'ready';
     data.isError = data.state === 'error';
+    data.thumbnail_url = data.isPrinting
+      ? `${import.meta.env.VITE_PRINTER_SERVER_URL}/api/v1/printer/${printerName}/job/thumbnail`
+      : null;
   }
 
   return {

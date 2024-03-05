@@ -7,7 +7,7 @@ import {
 } from '@/lib/api.ts';
 import { cn } from '@/lib/utils.ts';
 import dayjs from 'dayjs';
-import React from 'react';
+import React, { useState } from 'react';
 
 interface TempThreshold {
   yellow: number;
@@ -53,8 +53,7 @@ function CurrentState({
         className,
       )}
     >
-      {state.state}{' '}
-      {state.isPrinting && ` ${(state.job.progress * 100).toFixed(2)}%`}
+      {state.state} {state.isPrinting && ` ${state.job.progress.toFixed(2)}%`}
     </h3>
   );
 }
@@ -99,12 +98,41 @@ function PartTemperature({
     </p>
   );
 }
+
+function PrinterCamera({
+  printerName,
+  showCamera,
+}: {
+  printerName: string;
+  showCamera: boolean;
+}) {
+  const { state, isLoading, error } = usePrinterState(printerName);
+
+  if (isLoading || error || !state) {
+    return (
+      <div>
+        <Skeleton className="min-h-[180px] w-full rounded-xl" />
+      </div>
+    );
+  }
+
+  if (!state.isPrinting || !state.thumbnail_url || showCamera) {
+    return <img src={state.camera_url} alt={`camera of ${state.name}`} />;
+  } else {
+    return (
+      <img src={state.thumbnail_url} alt={`job thumbnail of ${state.name}`} />
+    );
+  }
+}
+
 export default function PrinterStateCard({
   printerName,
 }: {
   printerName: string;
 }) {
   const { state, isLoading, error } = usePrinterState(printerName);
+  const [showCamera, setShowCamera] = useState<boolean>(true);
+
   if (isLoading || error || !state) {
     return (
       <div>
@@ -113,7 +141,10 @@ export default function PrinterStateCard({
     );
   }
   return (
-    <Card className="p-6 dark:bg-slate-900">
+    <Card
+      className="p-6 dark:bg-slate-900"
+      onClick={() => setShowCamera((state) => !state)}
+    >
       <CardHeader className="flex-row content-center items-center justify-between p-0 text-xl font-bold capitalize md:text-2xl">
         <h3>
           {printerName} ({state.model})
@@ -160,9 +191,7 @@ export default function PrinterStateCard({
           )}
         </div>
 
-        <div aria-label="camera">
-          <img src={state.camera_url} alt={`camera of printer ${state.name}`} />
-        </div>
+        <PrinterCamera printerName={printerName} showCamera={showCamera} />
       </CardContent>
     </Card>
   );
