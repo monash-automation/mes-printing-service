@@ -5,6 +5,8 @@ import {
   CarouselApi,
   CarouselContent,
   CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
 } from '@/components/ui/carousel.tsx';
 import Autoplay from 'embla-carousel-autoplay';
 import { useEffect, useState } from 'react';
@@ -45,7 +47,7 @@ export default function PrinterDashboard() {
   return (
     <section aria-label="printer dashboard">
       <div className="mx-2 flex flex-row content-center items-center justify-between md:mx-4">
-        <h2 className="py-4 text-3xl">Printer Dashboard</h2>
+        <h2 className="py-8 text-3xl">Printer Dashboard</h2>
         <ModeToggle />
       </div>
       <Carousel
@@ -53,6 +55,7 @@ export default function PrinterDashboard() {
         plugins={[
           Autoplay({
             delay: 15000,
+            stopOnInteraction: true,
           }),
         ]}
         opts={{
@@ -67,10 +70,16 @@ export default function PrinterDashboard() {
             </CarouselItem>
           ))}
         </CarouselContent>
+        <footer className="mt-10 flex flex-row justify-center">
+          <div className="relative flex w-20 flex-row content-center justify-center">
+            <CarouselPrevious />
+            <span className="text-center text-lg text-muted-foreground">
+              {current} / {count}
+            </span>
+            <CarouselNext />
+          </div>
+        </footer>
       </Carousel>
-      <div className="text-md pt-3 text-center text-muted-foreground">
-        {current} / {count}
-      </div>
     </section>
   );
 }
