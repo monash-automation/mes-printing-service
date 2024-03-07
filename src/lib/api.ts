@@ -72,6 +72,7 @@ export function usePrinterState(printerName: string) {
   const { data, error, isLoading } = useSWR(
     `/api/v1/printer/${printerName}/state`,
     getFetcher<PrinterState>,
+    { refreshInterval: 5000 },
   );
 
   if (data) {
