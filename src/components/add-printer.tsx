@@ -26,11 +26,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { PrinterApi, usePrinters } from '@/lib/api.ts';
+import { PrinterApi, createPrinter } from '@/lib/api.ts';
 import { useUserStore } from '@/lib/states.ts';
 import { useAuth0 } from '@auth0/auth0-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { useSWRConfig } from 'swr';
 import * as z from 'zod';
 
 const formSchema = z.object({
@@ -42,8 +43,8 @@ const formSchema = z.object({
 
 export function AddPrinterButton() {
   const { loginWithRedirect } = useAuth0();
+  const { mutate } = useSWRConfig();
   const token = useUserStore((state) => state.accessToken);
-  const { createPrinter } = usePrinters();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -63,7 +64,7 @@ export function AddPrinterButton() {
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    createPrinter(token!, values);
+    createPrinter(token!, values).then(() => mutate('/api/v1/printers'));
   }
 
   return (

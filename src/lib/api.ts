@@ -59,7 +59,10 @@ async function getFetcher<T>(url: string) {
   return resp.data;
 }
 
-async function createPrinter(accessToken: string, printer: CreatePrinter) {
+export async function createPrinter(
+  accessToken: string,
+  printer: CreatePrinter,
+) {
   const resp = await _axios.post<PrinterId>('/api/v1/printers', printer, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -92,7 +95,7 @@ export function usePrinterState(printerName: string) {
 }
 
 export function usePrinters() {
-  const { data, error, isLoading, mutate } = useSWR(
+  const { data, error, isLoading } = useSWR(
     '/api/v1/printers',
     getFetcher<Printer[]>,
   );
@@ -101,9 +104,5 @@ export function usePrinters() {
     printers: data,
     isLoading,
     error,
-    createPrinter: async (token: string, printer: CreatePrinter) =>
-      // TODO: fix me
-      // @ts-ignore
-      await mutate(createPrinter(token, printer)),
   };
 }
