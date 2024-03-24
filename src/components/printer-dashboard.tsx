@@ -1,4 +1,3 @@
-import { ModeToggle } from '@/components/mode-toggle.tsx';
 import PrinterStateCard from '@/components/printer-state-card.tsx';
 import {
   Carousel,
@@ -48,7 +47,6 @@ export default function PrinterDashboard() {
     <section aria-label="printer dashboard">
       <div className="mx-2 flex flex-row content-center items-center justify-between md:mx-4">
         <h2 className="py-8 text-3xl">Printer Dashboard</h2>
-        <ModeToggle />
       </div>
       <Carousel
         setApi={setApi}
